@@ -116,18 +116,17 @@ def superjob_get():
             vacancy_salary = main_info.find('span', {
                 'class': '_3mfro _2Wp8I f-test-text-company-item-salary PlM3e _2JVkc _2VHxz'})
             if not vacancy_salary or vacancy_salary.getText() == 'По договорённости':
-                salary = {'min': 'Не указано', 'max': 'Не указано'}
+                salary = {'min': 'Не указано', 'max': 'Не указано', 'type': 'Не указано'}
             else:
                 salary_data = re.findall('[от\s]*(\d+\s\d+)', vacancy_salary.getText())
                 if not salary_data:
-                    salary = {'min': 'Не указано', 'max': 'Не указано'}
+                    salary = {'min': 'Не указано', 'max': 'Не указано', 'type': 'Не указано'}
                 else:
                     if len(salary_data) > 1:
-                        salary = {'min': salary_data[0], 'max': salary_data[1]}
+                        salary = {'min': salary_data[0], 'max': salary_data[1], 'type': 'руб.'}
                     else:
-                        salary = {'min': salary_data[0], 'max': 'Не указано'}
-
-            # Название компании
+                        salary = {'min': salary_data[0], 'max': 'Не указано', 'type': 'руб.'}
+        # Название компании
             company = main_info.find('span', {
                 'class': '_3mfro _3Fsn4 f-test-text-vacancy-item-company-name _9fXTd _2JVkc _3e53o _15msI'})
             if not company:
@@ -193,5 +192,5 @@ data_hh = pd.DataFrame(hh_get())
 print(f'На сайте {main_link1} всего найдено {len(superjob)} вакансий по слову "{vacancy}"')
 print(f'На сайте {main_link2} всего найдено {len(hh)} вакансий по слову "{vacancy}"')
 
-#pprint(data_superjob.head(10))
-#pprint(data_hh.head(10))
+pprint(data_superjob.head(10))
+pprint(data_hh.head(10))
