@@ -244,6 +244,8 @@ for o in objects:
         else:
             s_max = ''
         print(f"{o['vacancy_name']}, зарплата от {o['salary']['min']}{s_max}, ссылка: {o['vacancy_link']}")
+    else:
+        print('Вакансии c нужной зарплатой не найдены\n')
 a = input('\nПоказать вакансии, где уровень зарплаты не указан? (yes, no)\n')
 if a == 'yes':
     objects = vac.find({'salary.min': {'$eq': 0}})
