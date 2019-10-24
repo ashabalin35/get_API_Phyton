@@ -25,6 +25,7 @@ months = {
 
 
 def news_from_lenta():
+    news_lenta = "Что-то пошло не так. Sorry..."
     try:
         request = requests.get(main_link1, headers=header)
         get_html = html.fromstring(request.text)
@@ -71,13 +72,16 @@ def news_from_lenta():
             news_data['news_link'] = main_link1 + link_list[i]
             news_data['publish_at'] = time_prep[i]
             news_lenta.append(news_data)
-        return news_lenta
+
 
     except requests.exceptions.ConnectionError:
-        print("No connection to site")
+        news_lenta = "No connection to site"
 
+    finally:
+        return news_lenta
 
 def news_from_mail():
+    news_mail = "Что-то пошло не так. Sorry..."
     try:
         request = requests.get(main_link2, headers=header)
         get_html = html.fromstring(request.text)
@@ -101,10 +105,12 @@ def news_from_mail():
             if 'https:' in link_list[i]:
                 news_data['publish_at'] = get_time_mail(link_list[i])
                 news_mail.append(news_data)
-        return news_mail
 
     except requests.exceptions.ConnectionError:
-        print("No connection to site")
+        news_mail = "No connection to site"
+
+    finally:
+        return news_mail
 
 
 # функция получения даты публикации новости с mail.ru
@@ -130,7 +136,13 @@ def get_time_mail(link):
 # Запрашиваем новости и выводим результаты
 
 news_lenta = news_from_lenta()
+if len(news_lenta) == 0:
+    news_lenta = "Что-то пошло не так. Sorry..."
+
 print(f'Новости с {main_link1}:\n{news_lenta}\n')
 
 news_mail = news_from_mail()
+if len(news_mail) == 0:
+    news_mail = "Что-то пошло не так. Sorry..."
 print(f'Новости с {main_link2}:\n{news_mail}')
+
