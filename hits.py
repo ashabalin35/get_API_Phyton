@@ -10,26 +10,27 @@ from pymongo import MongoClient
 
 
 chrome_options = Options()
-chrome_options.add_argument('start-maximized')
-#chrome_options.add_argument('--headless')
+chrome_options.add_argument('start-maximized') # работает только так
+#chrome_options.add_argument('--headless') - с этим параметром кнопку sel-hits-button-next не находит....
 import time
 
 driver = webdriver.Chrome(options=chrome_options)
 driver.get('https://www.mvideo.ru/')
 
 assert 'М.Видео' in driver.title
+
 time.sleep(5)
 
-# победить кнопку c предложением включить рассылку не удалось...
-# Данные кода различаются между обычным браузером и chromedriver
-# версия браузера 88. хромдайвер 88...
 try:
+    iframe = driver.find_element_by_class_name('flocktory-widget')
+    driver.switch_to.frame(iframe)
     button = driver.find_element_by_class_name('PushTip-close')
     button.click()
+    print('Всплывающее окно закрыто')
+    driver.switch_to.default_content()
 except:
     print('нет кнопки рассылки')
 
-# С окном - предложением подписки та же история. Не срабатывает
 try:
     button = driver.find_element_by_id('Cross')
     button.click()
@@ -40,7 +41,7 @@ data = driver.find_element_by_xpath("//div[@class='accessories-carousel-holder c
 i = 1
 while True:
     try:
-        button = data.find_element_by_class_name('sel-hits-button-next')
+        button = data.find_element_by_class_name('sel-hits-button-next') #
         button.click()
         time.sleep(2)
         print(f'Нажали {i} раз')
@@ -48,10 +49,12 @@ while True:
         try: # "Костыль" для остановки нажатия кнопки. День убил, но ни чего другого сделать не смог...
             stops = data.find_element_by_class_name('disabled')
             stops.click()
+            print('Весь список открыт')
             break
         except:
             pass
     except:
+        print('Что-то пошло не так...')
         break
 
 hits = data.find_elements_by_class_name('gallery-list-item')
